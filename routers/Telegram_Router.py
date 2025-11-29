@@ -1,10 +1,16 @@
 from fastapi import APIRouter
 from fastapi import Request
-from controllers.Telegram_Controller import telegram_webhook_controller
+
+# from controllers.Telegram_Controller import telegram_webhook_controller
 import os
 import requests
 import dotenv
 from supabase_client import supabase
+import httpx
+from controllers.Telegram_Controller import (
+    save_chat_id_to_supabase,
+    send_message_to_telegram,
+)
 
 dotenv.load_dotenv(override=True)
 
@@ -22,23 +28,14 @@ async def telegram_webhook_test():
 async def telegram_webhook(request: Request):
     print("telegram_webhook called👉")
     body = await request.json()
+
     chat_id = body.get("message", {}).get("chat", {}).get("id", "")
-    response = requests.post(
-        f"https://api.telegram.org/bot{TOKEN}/sendMessage",
-        data={"chat_id": chat_id, "text": "היי! מחברים אותך, כמה רגעים..."},
-    )
-    print("body: ", body)
-    text = body.get("message", {}).get("text", "")  # "/start PAYLOAD"
-    print("text: ", text)
-    payload = text.split(" ")[1] if " " in text else None
-    print("chat_id: ", chat_id)
-    print("payload: ", payload)
-    response_supabase = (
-        supabase.table("user_chat_ids")
-        .upsert({"user_id": payload, "chat_id": chat_id}, on_conflict="user_id")
-        .execute()
-    )
-    print("response: ", response)
-    print("response_supabase: ", response_supabase.data)
-    return {"message": "Telegram webhook received successfully"}
-    # return await telegram_webhook_controller(body)
+    user_id = body.get("message", {}).get("from", {}).get("id", "")
+    await send_message_to_telegram(chat_id, "היי! מחברים אותך, כמה רגעים...")
+    if await save_chat_id_to_supabase(chat_id, user_id):
+        # client_url = os.getenv('CLIENT_URL')
+        client_url = "https://grumpy-grapes-guess.loca.lt"
+        text = f"החיבור עבר בהצלחה!\nחזור לאתר בכדי להגדיר כל כמה זמן תרצה לקבל מיילים לבוט\n\n <a href=\"{client_url}/connection-telegram\">לחץ כאן כדי לפתוח את האתר</a>"
+        await send_message_to_telegram(chat_id, text, parse_mode="HTML")
+    else:
+        await send_message_to_telegram(chat_id, "החיבור נכשל. נסה שנית מאוחר יותר.")
