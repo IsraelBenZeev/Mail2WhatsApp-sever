@@ -23,7 +23,6 @@ Rules:
 """
 
 
-
 # אתחול - יצירת הכלי בתוך פונקציה כדי להבטיח שהוא נוצר נכון
 def get_style_agent_tool():
     """
@@ -39,3 +38,15 @@ def get_style_agent_tool():
         # כלי חובה: כל טקסט שמוחזר למשתמש חייב לעבור דרך כלי זה. קרא לכלי עם הפרמטר 'input' שמכיל את הטקסט. דוגמה: style_agent_tool(input='הטקסט שלך כאן').
     )
     return style_agent_tool
+
+
+def get_style_agent():
+    """
+    יוצר ומחזיר את הכלי style_agent_tool.
+    יש לקרוא לפונקציה זו בתוך init_agent כדי להבטיח שהכלי נוצר נכון.
+    """
+    style_agent = Agent(
+        name="style_agent", instructions=instructions, model="gpt-4o-mini"
+    )
+
+    return style_agent
