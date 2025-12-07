@@ -38,7 +38,7 @@ async def telegram_webhook(request: Request):
     await send_message_to_telegram(chat_id, "היי! מחברים אותך, כמה רגעים...")
     if await save_chat_id_to_supabase(chat_id, user_id):
         # client_url = os.getenv('CLIENT_URL')
-        client_url = "https://vicbs-109-67-185-194.a.free.pinggy.link"
+        client_url = os.getenv("CLIENT_URL")
         text = f"החיבור עבר בהצלחה!\nחזור לאתר בכדי להגדיר כל כמה זמן תרצה לקבל מיילים לבוט\n\n <a href=\"{client_url}/connection-telegram\">לחץ כאן כדי לפתוח את האתר</a>"
         await send_message_to_telegram(chat_id, text, parse_mode="HTML")
     else:
