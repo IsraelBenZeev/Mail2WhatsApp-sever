@@ -18,10 +18,7 @@ TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 routerTelegram = APIRouter()
 
 
-@routerTelegram.get("/webhook-test")
-async def telegram_webhook_test():
-    print("telegram_webhook_test called👉")
-    return {"message": "Telegram webhook test received successfully"}
+
 
 
 @routerTelegram.post("/webhook")
@@ -30,16 +27,17 @@ async def telegram_webhook(request: Request):
     body = await request.json()
     print("body: ", body)
     text = body['message']['text'].split()[1] 
-    # uuid = text.split()[1]  
+    # uuid = text.split()[1]  knv
     print("text: ", text)   
 
     chat_id = body.get("message", {}).get("chat", {}).get("id", "")
-    user_id = body.get("message", {}).get("from", {}).get("id", "")
+    user_id = body['message']['text'].split()[1]
     await send_message_to_telegram(chat_id, "היי! מחברים אותך, כמה רגעים...")
     if await save_chat_id_to_supabase(chat_id, user_id):
         # client_url = os.getenv('CLIENT_URL')
+        # client_url = os.getenv("CLIENT_URL")
         client_url = os.getenv("CLIENT_URL")
-        text = f"החיבור עבר בהצלחה!\nחזור לאתר בכדי להגדיר כל כמה זמן תרצה לקבל מיילים לבוט\n\n <a href=\"{client_url}/connection-telegram\">לחץ כאן כדי לפתוח את האתר</a>"
+        text = f"החיבור עבר בהצלחה!\nחזור לאתר בכדי להגדיר כל כמה זמן תרצה לקבל מיילים לבוט\n\n <a href=\"{client_url}/connection-telegram\">לחץ כאן כדי לפתוח את האתר</a> או העתק את הקישור {client_url}/connection-telegram"
         await send_message_to_telegram(chat_id, text, parse_mode="HTML")
     else:
         await send_message_to_telegram(chat_id, "החיבור נכשל. נסה שנית מאוחר יותר.")
