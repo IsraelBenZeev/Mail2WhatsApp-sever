@@ -44,7 +44,7 @@ async def telegram_webhook(request: Request):
         # client_url = os.getenv('CLIENT_URL')
         # client_url = os.getenv("CLIENT_URL")
         client_url = os.getenv("CLIENT_URL")
-        text = f'החיבור עבר בהצלחה!\nחזור לאתר בכדי להגדיר כל כמה זמן תרצה לקבל מיילים לבוט\n\n <a href="{client_url}/connection-telegram">לחץ כאן כדי לפתוח את האתר</a> או העתק את הקישור {client_url}/connection-telegram'
+        text = f'החיבור עבר בהצלחה!\nחזור לאתר בכדי להגדיר כל כמה זמן תרצה לקבל מיילים לבוט\n\n <a href="{client_url}/connection-telegram">לחץ כאן כדי לפתוח את האתר</a>'
         await send_message_to_telegram(chat_id, text, parse_mode="HTML")
     else:
         await send_message_to_telegram(chat_id, "החיבור נכשל. נסה שנית מאוחר יותר.")

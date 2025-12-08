@@ -1,6 +1,7 @@
 from tools_agent_email.gmail_tools import GmailTools
 from styleAgent import get_style_agent
 from agents import Agent, trace, Runner
+from controllers.Telegram_Controller import send_message_to_telegram
 
 style_agent = get_style_agent()
 instructions = """
@@ -30,7 +31,12 @@ async def get_emails():
             max_results=3,
             next_page_token=None,
         )
-        emails_text = "\n\n".join([f"Subject: {e.subject}\nSender: {e.sender}\nSnippet: {e.snippet}" for e in results.messages])
+        emails_text = "\n\n".join(
+            [
+                f"Subject: {e.subject}\nSender: {e.sender}\nSnippet: {e.snippet}"
+                for e in results.messages
+            ]
+        )
         with trace("get_emails"):
             result = await Runner.run(style_agent, emails_text)
             print("result from LLM: ", result.final_output)
@@ -41,6 +47,9 @@ async def get_emails():
         #     result = await Runner.run(style_agent, list(results.messages))
         #     print("result from LLM: ", result.final_output)
 
+        await send_message_to_telegram(
+            chat_id="1265060928", text=result.final_output, parse_mode=None
+        )
         return {"message": "Emails retrieved successfully", "data": results}
 
     except Exception as e:

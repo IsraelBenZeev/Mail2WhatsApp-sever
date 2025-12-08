@@ -17,7 +17,7 @@ TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 async def save_chat_id_to_supabase(chat_id: str, user_id: str):
     print("save_chat_id_to_supabase called👉")
     print("user_id: ", user_id)
-    print("chat_id: ", chat_id) 
+    print("chat_id: ", chat_id)
     try:
         supabase.table("user_chat_ids").upsert(
             {"user_id": user_id, "chat_id": chat_id}
@@ -35,9 +35,13 @@ async def save_chat_id_to_supabase(chat_id: str, user_id: str):
 
 async def send_message_to_telegram(chat_id: str, text: str, parse_mode: str = "HTML"):
     try:
+        payload = {"chat_id": chat_id, "text": text}
+        if parse_mode:
+            payload["parse_mode"] = parse_mode
+
         response = await httpx.AsyncClient().post(
             url=f"https://api.telegram.org/bot{TOKEN}/sendMessage",
-            json={"chat_id": chat_id, "text": text, "parse_mode": parse_mode},
+            json=payload,
         )
 
         if response.status_code != 200:
