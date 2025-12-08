@@ -33,7 +33,9 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
+
     print("root endpoint called!🙌")
+    os.system('cls')
     return {"message": "Welcome to the Mail2WhatsApp server!", "version": "1.0"}
 
 
