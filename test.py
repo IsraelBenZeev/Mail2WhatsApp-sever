@@ -3,6 +3,7 @@ from styleAgent import get_style_agent
 from agents import Agent, trace, Runner
 from controllers.Telegram_Controller import send_message_to_telegram
 
+
 style_agent = get_style_agent()
 instructions = """
 The agent receives an array of EmailMessage objects.
