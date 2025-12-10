@@ -47,9 +47,7 @@ async def get_emails():
         #     result = await Runner.run(style_agent, list(results.messages))
         #     print("result from LLM: ", result.final_output)
 
-        await send_message_to_telegram(
-            chat_id="1265060928", text=result.final_output, parse_mode=None
-        )
+        await send_message_to_telegram(chat_id=1265060928, text=result.final_output)
         return {"message": "Emails retrieved successfully", "data": results}
 
     except Exception as e:
