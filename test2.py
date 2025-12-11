@@ -1,32 +1,27 @@
 import schedule
 import time
+import asyncio
 from datetime import datetime
 from supabase_client import supabase
-from controllers.Telegram_Controller import send_message_to_telegram
-# פונקציה שמבצעת פעולה על המשתמש
+from test import get_emails
+
 def do_action(user):
-    print(f"מבצע פעולה על היוזר {user['id']} בשעה {user['time']}")
+    print(f"מבצע פעולה על היוזר {user['user_id']} בשעה {user['time']}")
+    asyncio.run(get_emails(user['user_id'], user['chat_id']))
+    print("--------------------------------")
 
-# פונקציה שבודקת את כל היוזרים
 def check_users():
-    users = supabase.auth.admin.list_users()
+    now = datetime.now().strftime("%H:%M")
+    users = supabase.from_("user_chat_ids").select("*").execute()
+    for user in users.data:
+        user_time = user['time'][:5]
+        print("now: ", now)
+        print("user_time: ", user_time)
+        if now == user_time:
+            do_action(user)
 
-    for user in users:
-        print("ID:", user.id)
-        print("Email:", user.email)
-        print("Name:", user.user_metadata.get("full_name"))
-        print("Last login:", user.last_sign_in_at)
-        print("--------------------------------")
-        # send_message_to_telegram(chat_id=result[0]["user_id"], text="TEST TEST TEST...")
-        # for user in users.data:
-            # כאן אפשר לבדוק לפי שעה אם רוצים
-            # if user["time"] == now:
-            # do_action(user)
-
-# קובע שיבוצע כל 3 שניות (לבדיקה)
 schedule.every(2).seconds.do(check_users)
 
-# לולאה שמריצה את ה-schedule
 try:
     while True:
         schedule.run_pending()

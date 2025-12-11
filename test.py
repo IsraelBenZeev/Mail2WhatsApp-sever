@@ -22,8 +22,11 @@ return name sender and subject and content and date always in hebrew only
 style_agent = Agent(name="style_agent", instructions=instructions, model="gpt-4o-mini")
 
 
-async def get_emails():
-    gmail_tool = GmailTools("1122fee0-eece-4e69-9554-b8d4792276ca")
+async def get_emails(user_id: str, chat_id: str):
+    print("get_emails called 👉")
+    print("user_id: ", user_id)
+    print("chat_id: ", chat_id) 
+    gmail_tool = GmailTools(user_id)
     query = "חשבונית או קבלה"
     try:
         results = gmail_tool.search_emails(
@@ -41,22 +44,9 @@ async def get_emails():
         with trace("get_emails"):
             result = await Runner.run(style_agent, emails_text)
             print("result from LLM: ", result.final_output)
-
-        # print(f"Found {results.count} emails")
-        # print("results: ", results.messages)
-        # with trace("get_emails"):
-        #     result = await Runner.run(style_agent, list(results.messages))
-        #     print("result from LLM: ", result.final_output)
-
-        await send_message_to_telegram(chat_id=1265060928, text=result.final_output)
+        await send_message_to_telegram(chat_id=chat_id, text=result.final_output)
         return {"message": "Emails retrieved successfully", "data": results}
 
     except Exception as e:
         print(f"Error retrieving emails: {e}")
         return {"message": "Error retrieving emails"}
-
-
-if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(get_emails())

@@ -33,13 +33,13 @@ async def save_chat_id_to_supabase(chat_id: str, user_id: str):
         return False
 
 
-async def send_message_to_telegram(chat_id: str, text: str, parse_mode: str = "HTML"):
+def send_message_to_telegram(chat_id: str, text: str, parse_mode: str = "HTML"):
     try:
         payload = {"chat_id": chat_id, "text": text}
         if parse_mode:
             payload["parse_mode"] = parse_mode
 
-        response = await httpx.AsyncClient().post(
+        response = httpx.post(
             url=f"https://api.telegram.org/bot{TOKEN}/sendMessage",
             json=payload,
         )
