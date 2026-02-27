@@ -10,6 +10,7 @@ from routers.OAuth_Callback_Router import routerOAuthCallback
 from routers.Users_Router import routerUsers
 from routers.Auth_signin_Router import routerAuthSignin
 from routers.Telegram_Router import routerTelegram
+from routers.Nutrition_Router import routerNutrition
 # from supabase_client import supabase
 
 app = FastAPI()
@@ -45,6 +46,7 @@ app.include_router(routerOAuthCallback, prefix="/OAuth", tags=["OAuth"])
 app.include_router(routerAuthSignin, prefix="/Auth", tags=["Auth"])
 app.include_router(routerUsers, prefix="/users", tags=["users"])
 app.include_router(routerTelegram, prefix="/telegram", tags=["telegram"])
+app.include_router(routerNutrition, prefix="/nutrition", tags=["nutrition"])
 
 HOST = os.getenv("HOST")
 
