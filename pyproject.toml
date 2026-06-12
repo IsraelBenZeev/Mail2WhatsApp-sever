@@ -15,4 +15,5 @@ dependencies = [
     "uvicorn>=0.38.0",
     "supabase>=2.23.2",
     "schedule>=1.2.2",
+    "slowapi>=0.1.9",
 ]

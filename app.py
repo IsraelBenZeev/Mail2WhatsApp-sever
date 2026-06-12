@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 import os
 from dotenv import load_dotenv
 
@@ -11,9 +13,12 @@ from routers.Users_Router import routerUsers
 from routers.Auth_signin_Router import routerAuthSignin
 from routers.Telegram_Router import routerTelegram
 from routers.Nutrition_Router import routerNutrition
+from limiter import limiter
 # from supabase_client import supabase
 
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # origins = [
 #     "http://localhost:5173",
 #     "http://localhost:5174",
