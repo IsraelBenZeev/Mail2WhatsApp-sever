@@ -15,5 +15,6 @@ def verify_supabase_token(authorization: str = Header(default=None)) -> str:
         return result.user.id
     except HTTPException:
         raise
-    except Exception:
+    except Exception as e:
+        print("verify_supabase_token error:", type(e).__name__, str(e))
         raise HTTPException(status_code=401, detail="Unauthorized")
